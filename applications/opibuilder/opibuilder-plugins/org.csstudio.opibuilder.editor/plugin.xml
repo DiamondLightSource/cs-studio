@@ -286,8 +286,10 @@
                icon="icons/edit.gif"
                label="Edit OPI"
                style="push">
-            <visibleWhen
-                  checkEnabled="true">
+            <visibleWhen checkEnabled="true">
+               <with variable="activePart">
+                  <instanceof value="org.csstudio.opibuilder.runmode.OPIView"/>
+               </with>
             </visibleWhen>
          </command>
       </menuContribution>
