@@ -281,6 +281,8 @@
       <menuContribution
             allPopups="false"
             locationURI="popup:org.eclipse.ui.popup.any?after=additions">
+         <!-- an EditOPI menu item is also added by org.csstudio.opibuilder.rcp
+               that is visible for OPIShells -->
          <command
                commandId="org.csstudio.opibuilder.commands.editopi"
                icon="icons/edit.gif"

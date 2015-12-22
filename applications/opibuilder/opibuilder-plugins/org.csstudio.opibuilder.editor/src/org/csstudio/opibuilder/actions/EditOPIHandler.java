@@ -34,12 +34,12 @@ public class EditOPIHandler extends AbstractHandler implements IHandler {
 
     private static final String OPI_EDITOR_ID = "org.csstudio.opibuilder.OPIEditor"; //$NON-NLS-1$
     private static final String OPI_EDITOR_PERSPECTIVE_ID = "org.csstudio.opibuilder.opieditor"; //$NON-NLS-1$
-    private boolean isEnabled = false;
 
     /** EditOPI action
      *  - if selected part is an OPIShell open this in the main CSS window in edit mode
      *  - if the selected part is in the CSS window  as an OPIView open as an editor
-     *  - if the selected part is in the CSS in run mode, open in edit mode
+     *  - if the selected part is in the CSS in run mode, open in edit mode.
+     *
      */
     @Override
     public Object execute(ExecutionEvent event) throws ExecutionException {
@@ -128,6 +128,15 @@ public class EditOPIHandler extends AbstractHandler implements IHandler {
      *  The handler is disabled if:
      *  - the open resource is a URL (i.e. the content is served over http)
      *  - CSS is in no-edit mode
+     *
+     *  The OPIEdit menu visibility rules defined for
+     *      org.csstudio.opibuilder.editor
+     *  and org.csstudio.opibuilder.rcp
+     *  should prevent the menu being accessible when anything other than an
+     *  OPIView or OPIShell is selected.
+     *
+     *  The isEnabled logic provides additional safety that the action will not be performed
+     *  in a context where there is no valid path to edit.
      */
     @Override
     public void setEnabled(Object evaluationContext) {
@@ -149,12 +158,8 @@ public class EditOPIHandler extends AbstractHandler implements IHandler {
                 enabled = (path instanceof Path);
             }
         }
-        this.isEnabled = enabled;
-    }
 
-    @Override
-    public boolean isEnabled() {
-        return super.isEnabled() && this.isEnabled;
+        setBaseEnabled(enabled);
     }
 
 }
