@@ -67,18 +67,14 @@
       <menuContribution
             allPopups="false"
             locationURI="popup:org.eclipse.ui.popup.any?after=additions">
-         <!-- an EditOPI menu item is also added by org.csstudio.opibuilder.editor
-               that is visible for OPIViews -->
          <command
                commandId="org.csstudio.opibuilder.commands.editopi"
                icon="icons/edit.gif"
                label="Edit OPI"
                style="push">
-            <visibleWhen>
+            <visibleWhen checkEnabled="true">
                 <with variable="activeShell">
-                    <test
-                        property="org.csstudio.opibuilder.isOPIShell"
-                        forcePluginActivation="true"/>
+                    <test property="org.csstudio.opibuilder.isOPIShell" />
                 </with>
             </visibleWhen>
          </command>
