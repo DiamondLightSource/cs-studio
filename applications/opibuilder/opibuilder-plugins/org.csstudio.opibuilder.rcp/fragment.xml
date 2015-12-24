@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <fragment>
-   <extension point="org.eclipse.core.expressions.propertyTesters">
-      <propertyTester
-          class="org.csstudio.opibuilder.OPIShellTester"
-          id="org.csstudio.opibuilder.OPIShellTester"
-          namespace="org.csstudio.opibuilder"
-          properties="isOPIShell"
-          type="org.eclipse.swt.widgets.Shell">
-      </propertyTester>
-   </extension>
    <extension
          point="org.eclipse.ui.editors">
       <!-- Note regarding name:
@@ -61,23 +52,5 @@
             id="org.csstudio.opibuilder.opiShellsChanged"
             name="OPI Shell opened">
       </command>
-   </extension>
-   <extension
-         point="org.eclipse.ui.menus">
-      <menuContribution
-            allPopups="false"
-            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
-         <command
-               commandId="org.csstudio.opibuilder.commands.editopi"
-               icon="icons/edit.gif"
-               label="Edit OPI"
-               style="push">
-            <visibleWhen checkEnabled="true">
-                <with variable="activeShell">
-                    <test property="org.csstudio.opibuilder.isOPIShell" />
-                </with>
-            </visibleWhen>
-         </command>
-      </menuContribution>
    </extension>
 </fragment>

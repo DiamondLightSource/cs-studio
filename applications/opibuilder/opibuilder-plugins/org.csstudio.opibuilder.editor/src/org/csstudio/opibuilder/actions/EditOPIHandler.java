@@ -34,7 +34,7 @@ public class EditOPIHandler extends AbstractHandler implements IHandler {
 
     private static final String OPI_EDITOR_ID = "org.csstudio.opibuilder.OPIEditor"; //$NON-NLS-1$
     private static final String OPI_EDITOR_PERSPECTIVE_ID = "org.csstudio.opibuilder.opieditor"; //$NON-NLS-1$
-    private boolean isEnabled = false;
+    private boolean isEnabled = true;
 
     /** EditOPI action
      *  - if selected part is an OPIShell open this in the main CSS window in edit mode
