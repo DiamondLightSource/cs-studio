@@ -335,17 +335,15 @@ public class OPIView extends ViewPart implements IOPIRuntime
         return getOPIRuntimeDelegate().getDisplayModel();
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public Object getAdapter(Class adapter) {
+    public <T> T getAdapter(Class<T> adapter) {
         if (opiRuntimeDelegate == null)
             return super.getAdapter(adapter);
-        Object obj = opiRuntimeDelegate.getAdapter(adapter);
+        T obj = opiRuntimeDelegate.getAdapter(adapter);
         if (obj != null)
             return obj;
         else
             return super.getAdapter(adapter);
-
     }
 
     public static boolean isOpenFromPerspective() {

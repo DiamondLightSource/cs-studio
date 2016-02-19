@@ -200,7 +200,7 @@ public class OPIRuntimeDelegate implements IAdaptable{
         connectionLayer.setClippingStrategy(new PatchedConnectionLayerClippingStrategy(
                 connectionLayer));
 
-    viewer.createControl(parent);
+        viewer.createControl(parent);
         viewer.setRootEditPart(root);
         viewer.setEditPartFactory(new WidgetEditPartFactory(
                 ExecutionMode.RUN_MODE));
