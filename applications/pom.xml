@@ -16,8 +16,8 @@
   <!-- PROPERTIES -->
   <properties>
     <!-- VERSIONS -->
-    <tycho.version>0.23.1</tycho.version>
-    <tycho-extras.version>0.23.1</tycho-extras.version>
+    <tycho.version>0.25.0-SNAPSHOT</tycho.version>
+    <tycho-extras.version>0.25.0-SNAPSHOT</tycho-extras.version>
     <cs-studio.version>4.2</cs-studio.version>
     <cs-studio-central.url>http://download.controlsystemstudio.org/applications/4.2</cs-studio-central.url>
     <eclipse.central.url>http://download.eclipse.org</eclipse.central.url>
@@ -43,6 +43,10 @@
   </properties>
   <!-- PLUGIN REPOSITORIES -->
   <pluginRepositories>
+    <pluginRepository>
+      <id>tycho-snapshots</id>
+      <url>https://repo.eclipse.org/content/repositories/tycho-snapshots/</url>
+    </pluginRepository>
     <pluginRepository>
       <id>tycho</id>
       <url>https://oss.sonatype.org/content/groups/public</url>
