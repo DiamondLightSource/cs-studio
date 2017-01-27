@@ -45,14 +45,14 @@ public class OPIFont{
         this.fontName = name;
         this.rawFontData = fontData;
         preDefined = true;
-        this.sizeInPixels = PreferencesHelper.isDefaultFontSizeInPixels();
+        this.sizeInPixels = getDefaultIsInPixels();
     }
 
     OPIFont(FontData fontData) {
         this.fontName = fontData.toString();
         this.rawFontData = fontData;
         preDefined = false;
-        this.sizeInPixels = PreferencesHelper.isDefaultFontSizeInPixels();
+        this.sizeInPixels = getDefaultIsInPixels();
     }
 
     OPIFont(String name, FontData fontData, boolean sizeInPixels) {
@@ -226,6 +226,10 @@ public class OPIFont{
 
     public boolean isSizeInPixels() {
         return sizeInPixels;
+    }
+
+    protected boolean getDefaultIsInPixels() {
+        return PreferencesHelper.isDefaultFontSizeInPixels();
     }
 
 }
