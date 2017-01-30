@@ -126,7 +126,7 @@ public class FontProperty extends AbstractWidgetProperty {
             fontElement = new Element(XML_ELEMENT_FONTNAME);
             fontElement.setText(opiFont.getFontMacroName());
         }
-        FontData fontData = opiFont.getFontData();
+        FontData fontData = opiFont.getRawFontData();
         fontElement.setAttribute(XML_ATTRIBUTE_FONT_NAME, fontData.getName());
         fontElement.setAttribute(XML_ATTRIBUTE_FONT_HEIGHT,
                 "" + fontData.getHeight()); //$NON-NLS-1$
