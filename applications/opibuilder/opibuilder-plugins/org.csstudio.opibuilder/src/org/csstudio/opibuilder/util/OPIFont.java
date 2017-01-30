@@ -56,12 +56,12 @@ public class OPIFont{
     }
 
     OPIFont(String name, FontData fontData, boolean sizeInPixels) {
-        this(name, scaleFontData(fontData, sizeInPixels));
+        this(name, fontData);
         this.sizeInPixels = sizeInPixels;
     }
 
     OPIFont(FontData fontData, boolean sizeInPixels) {
-        this(scaleFontData(fontData, sizeInPixels));
+        this(fontData);
         this.sizeInPixels = sizeInPixels;
     }
 
