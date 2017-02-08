@@ -45,23 +45,23 @@ public class OPIFont{
         this.fontName = name;
         this.rawFontData = fontData;
         preDefined = true;
-        this.sizeInPixels = PreferencesHelper.isDefaultFontSizeInPixels();
+        this.sizeInPixels = getDefaultIsInPixels();
     }
 
     OPIFont(FontData fontData) {
         this.fontName = fontData.toString();
         this.rawFontData = fontData;
         preDefined = false;
-        this.sizeInPixels = PreferencesHelper.isDefaultFontSizeInPixels();
+        this.sizeInPixels = getDefaultIsInPixels();
     }
 
     OPIFont(String name, FontData fontData, boolean sizeInPixels) {
-        this(name, scaleFontData(fontData, sizeInPixels));
+        this(name, fontData);
         this.sizeInPixels = sizeInPixels;
     }
 
     OPIFont(FontData fontData, boolean sizeInPixels) {
-        this(scaleFontData(fontData, sizeInPixels));
+        this(fontData);
         this.sizeInPixels = sizeInPixels;
     }
 
@@ -69,27 +69,8 @@ public class OPIFont{
         this(opiFont.getFontMacroName(), opiFont.rawFontData);
     }
 
-    private static int pointsToPixels(int points) {
-        return points * POINTS_PER_INCH / Display.getDefault().getDPI().y;
-    }
-
     private static int pixelsToPoints(int pixels) {
-        return pixels * Display.getDefault().getDPI().y / POINTS_PER_INCH;
-    }
-
-    /**
-     * If FontData is provided with height in pixels, rescale it and return the
-     * 'raw' FontData with height in points.
-     * @param fontData  the provided FontData
-     * @param sizeInPixels whether the FontData is representing pixels or points
-     * @return the rescaled FontData
-     */
-    private static FontData scaleFontData(FontData fontData, boolean sizeInPixels) {
-        if (sizeInPixels) {
-            return new FontData(fontData.getName(), pixelsToPoints(fontData.getHeight()), fontData.getStyle());
-        } else {
-            return fontData;
-        }
+        return pixels * POINTS_PER_INCH / Display.getDefault().getDPI().y;
     }
 
     /**Returns the Macro Name of the OPIFont.
@@ -144,7 +125,7 @@ public class OPIFont{
     public FontData getFontData() {
         int height = rawFontData.getHeight();
         if (this.sizeInPixels) {
-            height = pointsToPixels(height);
+            height = pixelsToPoints(height);
         }
         return new FontData(rawFontData.getName(), height, rawFontData.getStyle());
     }
@@ -226,6 +207,10 @@ public class OPIFont{
 
     public boolean isSizeInPixels() {
         return sizeInPixels;
+    }
+
+    protected boolean getDefaultIsInPixels() {
+        return PreferencesHelper.isDefaultFontSizeInPixels();
     }
 
 }
