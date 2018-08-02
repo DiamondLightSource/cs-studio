@@ -28,6 +28,9 @@ import org.eclipse.swt.graphics.Rectangle;
 @SuppressWarnings("nls")
 public class TimeAxis extends AxisPart<Instant>
 {
+	
+    protected volatile boolean show_now = false;
+
     /** Create axis with label and listener. */
     public static TimeAxis forDuration(final String name, final PlotPartListener listener,
             final Duration duration)
@@ -78,6 +81,24 @@ public class TimeAxis extends AxisPart<Instant>
         setValueRange(new_low, new_high);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean isNowVisible()
+    {
+        return show_now;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setNowVisible(final boolean now)
+    {
+        if (show_now == now)
+            return;
+        show_now = now;
+        requestLayout();
+        requestRefresh();
+    }
+    
     /** Scale Duration by floating point number
      *  @param start Start of a duration
      *  @param end End of a duration
@@ -176,6 +197,15 @@ public class TimeAxis extends AxisPart<Instant>
                     region.y + region.height - label_size.y - 1, false);
         }
 
+        // Current time marker
+        if (show_now) {
+            final Instant now = Instant.now();
+            int now_x = getScreenCoord(now);
+            gc.setLineStyle(SWT.LINE_DASH);
+            gc.drawLine(now_x, plot_bounds.y, now_x, region.y-1);
+            gc.setLineStyle(SWT.LINE_SOLID);
+        }
+        
         gc.setForeground(old_fg);
     }
 
