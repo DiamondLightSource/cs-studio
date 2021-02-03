@@ -18,6 +18,8 @@ import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.util.SingleSourceHelper;
+import org.csstudio.opibuilder.widgets.model.RectangleModel;
+import org.csstudio.opibuilder.widgets.model.TextInputModel;
 import org.csstudio.ui.util.thread.UIBundlingThread;
 import org.eclipse.core.commands.Command;
 import org.eclipse.core.commands.ExecutionEvent;
@@ -44,10 +46,15 @@ import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.ShellEvent;
 import org.eclipse.swt.events.ShellListener;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
@@ -98,8 +105,17 @@ public final class OPIShell implements IOPIRuntime {
     private final Shell shell;
     private final ActionRegistry actionRegistry;
     private final GraphicalViewer viewer;
+
+    // Flag indicating that a modal dialog is currently displayed.
+    private boolean isModalDialogDisplayed = false;
+
+    // Temporary overlay widgets to be displayed when a modal dialog appears.
+    private TextInputModel modalDialogWarningOverlayModel;
+    private RectangleModel rectangleOverlayModel;
+
     // Variables that change if OPI input is changed.
     private DisplayModel displayModel;
+
     private IPath path;
     // macrosInput should not be null.  If there are no macros it should
     // be an empty MacrosInput object.
@@ -199,6 +215,63 @@ public final class OPIShell implements IOPIRuntime {
             }
         });
 
+        /*
+         * Workaround for modal dialogs.
+         *
+         * Display an overlay warning widget over the current OPI displays to inform the
+         * user that a modal dialog is open somewhere in the workspace. Once the dialog
+         * is closed, then the OPI shells are reverted to their original states.
+         *
+         * A shell is activated once it acquires focus by 1) a user clicking on it 2) on
+         * a workspace switch it moves to the foreground.
+         */
+        initialiseModalWarningOverlayModels();
+        display.addFilter(SWT.Activate, new Listener() {
+            @Override
+            public void handleEvent(Event event) {
+                Shell active = PlatformUI.getWorkbench().getDisplay().getActiveShell();
+
+                int modalStyleMask = SWT.APPLICATION_MODAL | SWT.PRIMARY_MODAL | SWT.SYSTEM_MODAL;
+                boolean isModal = (active.getStyle() & modalStyleMask) > 0;
+
+                if (isModal) {
+                    if (!isModalDialogDisplayed) {
+                        for (OPIShell o : OPIShell.getAllShells()) {
+                            o.shell.setText("Modal dialog detected!");
+                            o.shell.setCursor(new Cursor(display, SWT.CURSOR_WAIT));
+                            try {
+                                o.addModalWarningOverlayToDisplayModel(active.getText());
+                            } catch (Exception e) {
+                                log.log(Level.WARNING, "Failed to add modal dialog overlay to OPI shell.", e);
+                            }
+                        }
+                        isModalDialogDisplayed = true;
+
+                        // SWT.Close and shellClosed events only trigger when pressing the 'x' button,
+                        // not when the shell is closed via other buttons, therefore need to listen
+                        // for the dispose event instead.
+                        active.addDisposeListener(new DisposeListener() {
+                            @Override
+                            public void widgetDisposed(DisposeEvent event) {
+                                // Revert OPI shells.
+                                for (OPIShell s : OPIShell.getAllShells()) {
+                                    s.setTitle();
+                                    s.shell.setCursor(new Cursor(display, SWT.CURSOR_ARROW));
+                                    try {
+                                        // Regenerate display model to remove temporary children warning widgets.
+                                        s.createDisplayModel();
+                                        isModalDialogDisplayed = false;
+                                    } catch (Exception e) {
+                                        log.log(Level.WARNING, "Failed to regenerate display model.", e);
+                                    }
+                                }
+                                active.removeDisposeListener(this);
+                            }
+                        });
+                    }
+                }
+            }
+        });
     }
 
     /**
@@ -248,6 +321,48 @@ public final class OPIShell implements IOPIRuntime {
     public void close() {
         shell.close();
         dispose();
+    }
+
+    private void initialiseModalWarningOverlayModels() throws Exception {
+        modalDialogWarningOverlayModel = new TextInputModel();
+        int modalWarningWidth = 330;
+        int modalWarningHeight = 70;
+
+        RGB yellowish = new RGB(255, 255, 150);
+        modalDialogWarningOverlayModel.setBackgroundColor(yellowish);
+        modalDialogWarningOverlayModel.setWidth(modalWarningWidth);
+        modalDialogWarningOverlayModel.setHeight(modalWarningHeight);
+        modalDialogWarningOverlayModel.setPropertyValue("horizontal_alignment", "1"); // centred
+        modalDialogWarningOverlayModel.setPropertyValue("border_style", "3");
+
+        // Mimic RHEL7 greying out over the background when a modal dialog appears.
+        rectangleOverlayModel = new RectangleModel();
+        RGB grey = new RGB(128, 128, 128);
+        rectangleOverlayModel.setBackgroundColor(grey);
+        rectangleOverlayModel.setPropertyValue("alpha", 150);
+    }
+
+    private void addModalWarningOverlayToDisplayModel(String modalDialogTitle) throws Exception {
+        Rectangle shellArea = shell.getClientArea();
+        int shellHeight = shellArea.height;
+        int shellWidth = shellArea.width;
+        int modalWarningWidth = modalDialogWarningOverlayModel.getWidth();
+        int modalWarningHeight = modalDialogWarningOverlayModel.getHeight();
+
+        modalDialogWarningOverlayModel
+                .setText(String.format("⚠️ Please close the \"%s\" modal dialog.", modalDialogTitle));
+        // Centred in the OPI shell.
+        modalDialogWarningOverlayModel.setLocation(shellWidth / 2 - modalWarningWidth / 2,
+                shellHeight / 2 - modalWarningHeight / 2);
+
+        rectangleOverlayModel.setSize(shellWidth, shellHeight);
+
+        displayModel.addChild(rectangleOverlayModel);
+        displayModel.addChild(modalDialogWarningOverlayModel);
+
+        viewer.setContents(displayModel);
+        displayModel.setViewer(viewer);
+        displayModel.setOpiRuntime(this);
     }
 
     private DisplayModel createDisplayModel() throws Exception {
