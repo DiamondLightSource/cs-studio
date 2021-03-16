@@ -122,7 +122,7 @@ public final class OPIShell implements IOPIRuntime {
     // macrosInput should not be null.  If there are no macros it should
     // be an empty MacrosInput object.
     private MacrosInput macrosInput;
-    
+
     private boolean isModalDialogOpen;
     private Shell activeModalDialogShell;
 
@@ -139,7 +139,7 @@ public final class OPIShell implements IOPIRuntime {
         displayModel = new DisplayModel(path);
         displayModel.setOpiRuntime(this);
         actionRegistry = new ActionRegistry();
-        
+
         isModalDialogOpen = false;
 
         viewer = new GraphicalViewerImpl();
@@ -199,7 +199,7 @@ public final class OPIShell implements IOPIRuntime {
                 }
             }
         });
-        
+
         /*
          * Don't open the Shell here, as it causes SWT to think the window is on top when it really isn't.
          * Wait until the window is open, then call shell.setFocus() in the activated listener.
@@ -221,7 +221,7 @@ public final class OPIShell implements IOPIRuntime {
                 resizeToContents();
             }
         });
-        
+
         /*
          * Workaround for modal dialogs.
          *
@@ -232,7 +232,7 @@ public final class OPIShell implements IOPIRuntime {
          * A shell is activated once it acquires focus by 1) a user clicking on it 2) on
          * a workspace switch it moves to the foreground.
          */
-        
+
         // Create a focus listener to identify when OPI has focus and to check
         // if modal dialog is open
         viewer.getControl().addFocusListener( new FocusListener() {
@@ -302,7 +302,7 @@ public final class OPIShell implements IOPIRuntime {
         });
     }
 
-    
+
     private Shell handleModalDialog(Display display, Shell active) {
         // Only used when OPI has focus therefore current shell is the OPI
         OPIShell o = getActiveShell();
@@ -323,7 +323,7 @@ public final class OPIShell implements IOPIRuntime {
         }
         return active;
     }
-    
+
     private void disposeModalDialog(Display display) {
         // Revert OPI shells.
         if (isModalDialogDisplayed)
@@ -349,7 +349,7 @@ public final class OPIShell implements IOPIRuntime {
             }
         }
     }
-    
+
     /**
      * In order for the right-click menu to work, this shell must be registered
      * with a view.  Register the context menu against the view.
@@ -431,18 +431,18 @@ public final class OPIShell implements IOPIRuntime {
         rectangleOverlayModel.setSize(shellWidth, shellHeight);
 
         displayModel.addChild(rectangleOverlayModel);
-        displayModel.addChild(modalDialogWarningOverlayModel);      
-        
+        displayModel.addChild(modalDialogWarningOverlayModel);
+
         displayModel.setViewer(viewer);
         displayModel.setOpiRuntime(this);
     }
-    
+
     private void removeModalWarningOverlayToDisplayModel() {
       if (rectangleOverlayModel != null)
           displayModel.removeChild(rectangleOverlayModel);
       if (modalDialogWarningOverlayModel != null)
           displayModel.removeChild(modalDialogWarningOverlayModel);
-      
+
       displayModel.setViewer(viewer);
       displayModel.setOpiRuntime(this);
     }
