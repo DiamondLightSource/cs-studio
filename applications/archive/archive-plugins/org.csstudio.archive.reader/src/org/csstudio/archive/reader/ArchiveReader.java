@@ -133,12 +133,13 @@ public interface ArchiveReader extends Closeable
      *  @param name Channel name
      *  @param start Start time
      *  @param end End time
+     *  @param retiredPV Boolean indicating whether this is a retired PV no longer being archived
      *  @return ValueIterator for the 'raw' samples in the archive
      *  @throws UnknownChannelException when channel is not known
      *  @throws Exception on error
      */
     public ValueIterator getRawValues(int key, String name,
-            Instant start, Instant end) throws UnknownChannelException, Exception;
+            Instant start, Instant end, boolean retiredPV) throws UnknownChannelException, Exception;
 
     /** Read optimized samples from the archive.
      *  <p>
@@ -158,12 +159,13 @@ public interface ArchiveReader extends Closeable
      *  @param start Start time
      *  @param end End time
      *  @param count Hint for number of values
+     *  @param retiredPV Boolean indicating whether this is a retired PV no longer being archived
      *  @return ValueIterator for the 'raw' samples in the archive
      *  @throws UnknownChannelException when channel is not known
      *  @throws Exception on error
      */
     public ValueIterator getOptimizedValues(int key, String name,
-        Instant start, Instant end, int count) throws UnknownChannelException, Exception;
+        Instant start, Instant end, int count, boolean retiredPV) throws UnknownChannelException, Exception;
 
     /** Cancel an ongoing archive query.
      *  It's up to the implementation to support this for all queries,

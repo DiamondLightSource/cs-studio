@@ -173,8 +173,8 @@ public abstract class AbstractArchiverReaderTesting {
 
     private ValueIterator getIterator(String name, boolean optimized, int count, Instant start, Instant end) throws Exception{
         return optimized ?
-                getReader().getOptimizedValues(1, name, start, end,count) :
-                getReader().getRawValues(1, name, start, end);
+                getReader().getOptimizedValues(1, name, start, end,count, false) :
+                getReader().getRawValues(1, name, start, end, false);
     }
 
     /**

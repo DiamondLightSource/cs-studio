@@ -106,7 +106,7 @@ public class DownsamplingDemo
         for (String name : names)
         {
             WriteChannel channel = writer.getChannel(name);
-            ValueIterator it = reader.getRawValues(1, name, start, end);
+            ValueIterator it = reader.getRawValues(1, name, start, end, false);
             int num_its = 0;
             while(it.hasNext())
             {
@@ -138,7 +138,7 @@ public class DownsamplingDemo
             for (final String name : channel_names)
             {
                 final Instant start = VTypeHelper.getTimestamp(
-                        influx.getRawValues(1, name, Instant.EPOCH, now).next());
+                        influx.getRawValues(1, name, Instant.EPOCH, now, false).next());
                 final Instant end = start.plus(COPY_AMOUNT);
                 getResults(rdb, influx, name, start, end, first_durations, total_num_samples);
                 final String msg = "Got results for 1/"+NUM_ITERATIONS+" tests of channel "+name+"("+(num_channels+1)+"/"+channel_names.length+")";
@@ -186,10 +186,10 @@ public class DownsamplingDemo
                     throws Exception
     {
         final ValueIterator its [] = {
-                rdb.getOptimizedValues(1, name, start, end, SAMPLE_COUNT),
-                new AveragedValueIterator(rdb.getRawValues(1, name, start, end), SAMPLE_COUNT),
-                influx.getOptimizedValues(1, name, start, end, SAMPLE_COUNT),
-                new AveragedValueIterator(influx.getRawValues(1, name, start, end), SAMPLE_COUNT)
+                rdb.getOptimizedValues(1, name, start, end, SAMPLE_COUNT, false),
+                new AveragedValueIterator(rdb.getRawValues(1, name, start, end, false), SAMPLE_COUNT),
+                influx.getOptimizedValues(1, name, start, end, SAMPLE_COUNT, false),
+                new AveragedValueIterator(influx.getRawValues(1, name, start, end, false), SAMPLE_COUNT)
         };
         for (int i = 0; i < 4; ++i)
         {

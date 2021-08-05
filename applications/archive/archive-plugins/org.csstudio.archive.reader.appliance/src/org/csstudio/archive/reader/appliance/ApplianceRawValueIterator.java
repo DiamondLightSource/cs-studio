@@ -23,14 +23,14 @@ public class ApplianceRawValueIterator extends ApplianceValueIterator {
      * @param start start of the time period
      * @param end end of the time period
      * @param listener the listener which is notified when the iterator is closed
-     *
+     * @param retiredPV Boolean indicating whether this is a retired PV no longer being archived
      * @throws IOException if there was an error during the data fetch process
      * @throws ArchiverApplianceException if the data cannot be loaded with this algorithm
      */
     public ApplianceRawValueIterator(ApplianceArchiveReader reader,
-            String name, Instant start, Instant end, IteratorListener listener)
+            String name, Instant start, Instant end, IteratorListener listener, boolean retiredPV)
                     throws ArchiverApplianceException, IOException {
-        super(reader,name,start,end,listener);
+        super(reader,name,start,end,listener, retiredPV);
         fetchData();
     }
 }

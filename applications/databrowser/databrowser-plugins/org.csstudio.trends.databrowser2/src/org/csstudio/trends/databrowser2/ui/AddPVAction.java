@@ -89,9 +89,10 @@ public class AddPVAction extends Action
                 new EditFormulaDialog(operations_manager, shell, formula);
             edit.open();
         }
-        else
+        else {
             AddModelItemCommand.forPV(shell, operations_manager, model,
-                dlg.getName(0), dlg.getScanPeriod(0), axis, archive);
+                dlg.getName(0), dlg.getScanPeriod(0), axis, archive, dlg.isRetired(0));
+        }
         return true;
     }
 }

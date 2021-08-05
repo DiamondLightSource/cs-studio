@@ -340,7 +340,7 @@ public class Controller
                                 (archives == null || i>=archives.length) ? null : archives[i];
                         AddModelItemCommand.forPV(shell, operations_manager,
                                 model, dlg.getName(i), dlg.getScanPeriod(i),
-                                axis, archive);
+                                axis, archive, dlg.isRetired(i));
                     }
                     return;
                 }
@@ -367,7 +367,7 @@ public class Controller
                 // Add PV Item with data to model
                 AddModelItemCommand.forPV(shell, operations_manager,
                         model, dlg.getItemName(), Preferences.getScanPeriod(),
-                        axis, imported);
+                        axis, imported, false);
             }
 
             @Override

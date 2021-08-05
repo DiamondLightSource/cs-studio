@@ -136,10 +136,10 @@ public class ArchiveFetchJob extends Job
                     {
                         if (item.getRequestType() == RequestType.RAW)
                             value_iter = the_reader.getRawValues(archive.getKey(), item.getResolvedName(),
-                                                                 start, end);
+                                                                 start, end, item.isRetiredPv());
                         else
                             value_iter = the_reader.getOptimizedValues(archive.getKey(), item.getResolvedName(),
-                                                                       start, end, bins);
+                                                                       start, end, bins, item.isRetiredPv());
                     }
                     catch (UnknownChannelException e)
                     {

@@ -90,7 +90,7 @@ public class ArchiveFileReader implements ArchiveReader
     }
 
     @Override
-    public ValueIterator getRawValues(int key, String name, Instant start, Instant end)
+    public ValueIterator getRawValues(int key, String name, Instant start, Instant end, boolean retiredPV)
             throws UnknownChannelException, Exception
     {
         final List<DataFileEntry> entries = indexReader.getEntries(name, start, end);
@@ -98,11 +98,11 @@ public class ArchiveFileReader implements ArchiveReader
     }
 
     @Override
-    public ValueIterator getOptimizedValues(int key, String name, Instant start, Instant end, int count)
+    public ValueIterator getOptimizedValues(int key, String name, Instant start, Instant end, int count, boolean retiredPV)
             throws UnknownChannelException, Exception
     {
         // Not implemented, falling back to raw values
-        return getRawValues(key, name, start, end);
+        return getRawValues(key, name, start, end, false);
     }
 
     @Override

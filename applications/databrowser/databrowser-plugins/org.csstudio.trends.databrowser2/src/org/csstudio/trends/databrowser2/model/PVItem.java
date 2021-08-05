@@ -86,6 +86,9 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>
      * the live buffer is too small to show all the data */
     private boolean automaticRefresh = Preferences.isAutomaticHistoryRefresh();
 
+    /** Indicating if the PV has been retired and so is no longer archived*/
+    private boolean retiredPv = false;
+
     /** Initialize
      *  @param name PV name
      *  @param period Scan period in seconds, &le;0 to 'monitor'
@@ -137,6 +140,21 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>
     public double getScanPeriod()
     {
         return period;
+    }
+
+    /**
+     * @return Whether this is a retired PV
+     */
+    public boolean isRetiredPv() {
+        return retiredPv;
+    }
+
+    /**
+     * Updated the retired PV status
+     * @param retiredPv boolean as to whether this PV has been retired
+     */
+    public void setRetiredPv(boolean retiredPv) {
+        this.retiredPv = retiredPv;
     }
 
     /** Update scan period.
@@ -463,6 +481,7 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>
         XMLWriter.XML(writer, 3, XMLPersistence.TAG_SCAN_PERIOD, getScanPeriod());
         XMLWriter.XML(writer, 3, XMLPersistence.TAG_LIVE_SAMPLE_BUFFER_SIZE, getLiveCapacity());
         XMLWriter.XML(writer, 3, XMLPersistence.TAG_REQUEST, getRequestType().name());
+        XMLWriter.XML(writer, 4, XMLPersistence.TAG_RETIRED, isRetiredPv());
         for (ArchiveDataSource archive : archives)
         {
             XMLWriter.start(writer, 3, XMLPersistence.TAG_ARCHIVE);
@@ -491,6 +510,8 @@ public class PVItem extends ModelItem implements PVReaderListener<List<VType>>
         final PVItem item = new PVItem(name, period);
         final int buffer_size = DOMHelper.getSubelementInt(node, XMLPersistence.TAG_LIVE_SAMPLE_BUFFER_SIZE, Preferences.getLiveSampleBufferSize());
         item.setLiveCapacity(buffer_size);
+        final boolean retired = DOMHelper.getSubelementBoolean(node, XMLPersistence.TAG_RETIRED, false);
+        item.setRetiredPv(retired);
 
         final String req_txt = DOMHelper.getSubelementString(node, XMLPersistence.TAG_REQUEST, RequestType.OPTIMIZED.name());
         try

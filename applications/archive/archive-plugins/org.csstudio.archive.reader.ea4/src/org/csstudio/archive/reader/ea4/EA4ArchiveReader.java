@@ -216,7 +216,7 @@ public class EA4ArchiveReader implements ArchiveReader
     public ValueIterator getRawValues(final int key,
                                       final String name,
                                       final Instant start,
-                                      final Instant end) throws Exception {
+                                      final Instant end, boolean retiredPV) throws Exception {
         return new ValueRequestIterator(this, key, name, start, end, false, 10);
     }
 
@@ -226,7 +226,7 @@ public class EA4ArchiveReader implements ArchiveReader
                                             final String name,
                                             final Instant start,
                                             final Instant end,
-                                            final int count) throws Exception {
+                                            final int count, boolean retiredPV) throws Exception {
           // return new ValueRequestIterator(this, key, name, start, end, false, 10);
         return new ValueRequestIterator(this, key, name, start, end, true, count);
     }

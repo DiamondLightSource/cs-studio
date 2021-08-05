@@ -80,8 +80,8 @@ public abstract class AbstractChannelHandler extends MultiplexedChannelHandler<B
             ArchiveReader archive = ArchiveRepository.getInstance().getArchiveReader(as.url);
             ValueIterator iterator;
             try {
-                iterator = optimised ? archive.getOptimizedValues(as.key, strippedName, startTime, endTime, binCount)
-                    : archive.getRawValues(as.key, strippedName, startTime, endTime);
+                iterator = optimised ? archive.getOptimizedValues(as.key, strippedName, startTime, endTime, binCount, false)
+                    : archive.getRawValues(as.key, strippedName, startTime, endTime, false);
             } catch (UnknownChannelException e) {
                 continue;
             }
@@ -118,7 +118,7 @@ public abstract class AbstractChannelHandler extends MultiplexedChannelHandler<B
             ArchiveReader archive = ArchiveRepository.getInstance().getArchiveReader(as.url);
             ValueIterator iterator;
             try {
-                iterator = archive.getRawValues(as.key, strippedName, time, time);
+                iterator = archive.getRawValues(as.key, strippedName, time, time, false);
             } catch (UnknownChannelException e) {
                 continue;
             }

@@ -84,7 +84,7 @@ public class ImportArchiveReader implements ArchiveReader
 
     @Override
     public ValueIterator getRawValues(final int key, final String name, final Instant start,
-            final Instant end) throws UnknownChannelException, Exception
+            final Instant end, boolean retiredPV) throws UnknownChannelException, Exception
     {
         if (values == null)
         {
@@ -99,10 +99,10 @@ public class ImportArchiveReader implements ArchiveReader
 
     @Override
     public ValueIterator getOptimizedValues(int key, String name, Instant start,
-            Instant end, int count) throws UnknownChannelException, Exception
+            Instant end, int count, boolean retiredPV) throws UnknownChannelException, Exception
     {
         // No optimization. Fall back to raw data.
-        return getRawValues(key, name, start, end);
+        return getRawValues(key, name, start, end, false);
     }
 
     @Override

@@ -63,6 +63,7 @@ public class AddPVDialog extends TitleAreaDialog
     private Text[] txt_name;
     private Text[] txt_period;
     private Button[] btn_monitor;
+    private Button[] btn_retired;
     private Combo[] axis;
 
     /** Entered names */
@@ -73,6 +74,8 @@ public class AddPVDialog extends TitleAreaDialog
 
     /** Selected Axis index or -1 */
     private int[] axis_index;
+
+    private boolean[] retiredPV;
 
     private AutoCompleteWidget[] autoCompleteWidget;
 
@@ -89,8 +92,10 @@ public class AddPVDialog extends TitleAreaDialog
         txt_name = new Text[count];
         txt_period = new Text[count];
         btn_monitor = new Button[count];
+        btn_retired = new Button[count];
         axis = new Combo[count];
         name = new String[count];
+        retiredPV = new boolean[count];
         period = new double[count];
         axis_index = new int[count];
         autoCompleteWidget = new AutoCompleteWidget[count];
@@ -163,8 +168,14 @@ public class AddPVDialog extends TitleAreaDialog
 
             txt_name[i] = new Text(box, SWT.BORDER);
             txt_name[i].setToolTipText(formula ? Messages.AddFormula_NameTT : Messages.AddPV_NameTT);
-            txt_name[i].setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns-1, 1));
+            txt_name[i].setLayoutData(new GridData(SWT.FILL, 0, true, false));
             autoCompleteWidget[i] = new AutoCompleteWidget(txt_name[i], AutoCompleteTypes.PV);
+
+            btn_retired[i] = new Button(box, SWT.CHECK);
+            btn_retired[i].setText(Messages.AddPV_Retired);
+            btn_retired[i].setToolTipText(Messages.AddPV_RetiredTT);
+            btn_retired[i].setLayoutData(new GridData(SWT.FILL, 0, false, false));
+            btn_retired[i].setSelection(false);
 
             if (! formula)
             {
@@ -294,6 +305,14 @@ public class AddPVDialog extends TitleAreaDialog
         return period[i];
     }
 
+    /**
+     * @param i Index
+     * @return If PV should be flagged as retired
+     */
+    public boolean isRetired(final int i) {
+        return retiredPV[i];
+    }
+
     /** @param i Index
      *  @return Index of Value Axis or -1 for 'create new'
      */
@@ -339,6 +358,12 @@ public class AddPVDialog extends TitleAreaDialog
                         return false;
                     }
                 }
+            }
+
+            if (btn_retired[i].getSelection()) {
+                retiredPV[i] = true;
+            } else {
+                retiredPV[i] = false;
             }
 
             // update axis_index internally

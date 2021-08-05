@@ -53,6 +53,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
     protected final String name;
     protected final Instant start;
     protected final Instant end;
+    protected final boolean retiredPV;
 
     private final IteratorListener listener;
 
@@ -67,14 +68,16 @@ public abstract class ApplianceValueIterator implements ValueIterator {
      * @param name the name of the pv to load the data for
      * @param start the start of the time window of the data
      * @param end the end of the time window of the data
+     * @param retiredPV Boolean indicating whether this is a retired PV no longer being archived
      */
     protected ApplianceValueIterator(ApplianceArchiveReader reader, String name, Instant start, Instant end,
-            IteratorListener listener) {
+            IteratorListener listener, boolean retiredPV) {
         this.reader = reader;
         this.name = name;
         this.start = start;
         this.end = end;
         this.listener = listener;
+        this.retiredPV = retiredPV;
     }
 
     /**
@@ -100,6 +103,8 @@ public abstract class ApplianceValueIterator implements ValueIterator {
         DataRetrieval dataRetrieval = reader.createDataRetriveal(reader.getDataRetrievalURL());
         HashMap<String, String> additionalCmds = new HashMap<String, String>();
         additionalCmds.put("fetchLatestMetadata","true");
+        if (this.retiredPV)
+            additionalCmds.put("retiredPV", "true");
         synchronized(lock){
             mainStream = dataRetrieval.getDataForPV(pvName, sqlStartTimestamp, sqlEndTimestamp, false, additionalCmds);
         }

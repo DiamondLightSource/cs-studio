@@ -157,7 +157,7 @@ public class RDBArchiveReaderTest
         final Instant start = end.minus(TIMERANGE);
 
         final BenchmarkTimer timer = new BenchmarkTimer();
-        final ValueIterator values = reader.getRawValues(0, name, start, end);
+        final ValueIterator values = reader.getRawValues(0, name, start, end, false);
 
         if (dump)
         {
@@ -230,7 +230,7 @@ public class RDBArchiveReaderTest
 
         // Cancel after 10 secs
         // scheduleCancellation(reader, 10.0);
-        final ValueIterator values = reader.getRawValues(0, array_name, start, end);
+        final ValueIterator values = reader.getRawValues(0, array_name, start, end, false);
         while (values.hasNext())
         {
             final VType value = values.next();
@@ -251,7 +251,7 @@ public class RDBArchiveReaderTest
         final Instant end = Instant.now();
         final Instant start = end.minus(TIMERANGE);
 
-        final ValueIterator raw = reader.getRawValues(0, name, start, end);
+        final ValueIterator raw = reader.getRawValues(0, name, start, end, false);
         final double seconds = TimeDuration.toSecondsDouble(Duration.between(start, end)) / BUCKETS;
         System.out.println("Time range: "
                 + TimestampHelper.format(start) + " ... " + TimestampHelper.format(end)

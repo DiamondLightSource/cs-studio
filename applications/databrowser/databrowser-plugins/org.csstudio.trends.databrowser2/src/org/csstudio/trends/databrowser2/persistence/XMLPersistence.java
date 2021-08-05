@@ -86,6 +86,7 @@ public class XMLPersistence
     final public static String TAG_MIN = "min";
     final public static String TAG_AUTO_SCALE = "autoscale";
     final public static String TAG_LOG_SCALE = "log_scale";
+    final public static String TAG_RETIRED = "retiredPV";
 
     final public static String TAG_ANNOTATION = "annotation";
     final public static String TAG_PV = "pv";

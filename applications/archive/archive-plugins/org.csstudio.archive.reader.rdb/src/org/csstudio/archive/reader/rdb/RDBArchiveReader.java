@@ -357,7 +357,7 @@ public class RDBArchiveReader implements ArchiveReader
     /** {@inheritDoc} */
     @Override
     public ValueIterator getRawValues(final int key, final String name,
-            final Instant start, final Instant end) throws UnknownChannelException, Exception
+            final Instant start, final Instant end, boolean retiredPV) throws UnknownChannelException, Exception
     {
         final int channel_id = getChannelID(name);
         return getRawValues(channel_id, start, end);
@@ -379,7 +379,7 @@ public class RDBArchiveReader implements ArchiveReader
     /** {@inheritDoc} */
     @Override
     public ValueIterator getOptimizedValues(final int key, final String name,
-            final Instant start, final Instant end, int count) throws UnknownChannelException, Exception
+            final Instant start, final Instant end, int count, boolean retiredPV) throws UnknownChannelException, Exception
     {
         // MySQL version of the stored proc. requires count > 1
         if (count <= 1)

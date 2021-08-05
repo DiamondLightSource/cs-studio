@@ -84,7 +84,7 @@ public class CopyDemo
         {
             System.out.print(name + " ...");
             System.out.flush();
-            final ValueIterator values = reader.getRawValues(1, name, start, end);
+            final ValueIterator values = reader.getRawValues(1, name, start, end, false);
 
             if (create_config)
                 config.addChannel(group, name, mode);

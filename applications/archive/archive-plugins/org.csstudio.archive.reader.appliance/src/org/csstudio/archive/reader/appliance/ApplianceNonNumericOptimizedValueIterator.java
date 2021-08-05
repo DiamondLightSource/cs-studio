@@ -25,16 +25,16 @@ public class ApplianceNonNumericOptimizedValueIterator extends ApplianceValueIte
      * @param start start of the time period
      * @param end end of the time period
      * @param requestedPoints number of requested points
-     * @param totalNumberofPoints the number of all points in the archive
      * @param listener the listener that is notified when the iterator is closed
-     *
+     * @param retiredPV Boolean indicating whether this is a retired PV no longer being archived
+     * @param totalNumberofPoints the number of all points in the archive
      * @throws IOException if there was an error during the data fetch process
      * @throws ArchiverApplianceException if it is not possible to load optimized data for the selected PV
      */
     public ApplianceNonNumericOptimizedValueIterator(ApplianceArchiveReader reader,
             String name, Instant start, Instant end, int requestedPoints, int totalNumberOfPoints,
-            IteratorListener listener) throws ArchiverApplianceException, IOException {
-        super(reader,name,start,end,listener);
+            IteratorListener listener, boolean retiredPV) throws ArchiverApplianceException, IOException {
+        super(reader,name,start,end,listener, retiredPV);
         this.requestedPoints = requestedPoints;
         this.totalNumberOfPoints = totalNumberOfPoints;
         fetchData();

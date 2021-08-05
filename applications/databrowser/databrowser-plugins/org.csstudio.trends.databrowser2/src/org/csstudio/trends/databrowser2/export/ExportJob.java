@@ -223,10 +223,10 @@ abstract public class ExportJob extends Job
                 ValueIterator iter;
                 if (source == Source.OPTIMIZED_ARCHIVE  &&  optimize_parameter > 1)
                     iter = reader.getOptimizedValues(archive.getKey(),
-                            item.getResolvedName(), start, end, (int)optimize_parameter);
+                            item.getResolvedName(), start, end, (int)optimize_parameter, false);
                 else
                 {
-                    iter = reader.getRawValues(archive.getKey(), item.getResolvedName(), start, end);
+                    iter = reader.getRawValues(archive.getKey(), item.getResolvedName(), start, end, false);
                     if (source == Source.LINEAR_INTERPOLATION && optimize_parameter >= 1)
                         iter = new LinearValueIterator(iter, TimeDuration.ofSeconds(optimize_parameter));
                 }
