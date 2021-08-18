@@ -168,14 +168,20 @@ public class AddPVDialog extends TitleAreaDialog
 
             txt_name[i] = new Text(box, SWT.BORDER);
             txt_name[i].setToolTipText(formula ? Messages.AddFormula_NameTT : Messages.AddPV_NameTT);
-            txt_name[i].setLayoutData(new GridData(SWT.FILL, 0, true, false));
+            // Adjust layout if showing button for retired PV option
+            if (Preferences.isShowRetiredPVOptions())
+                txt_name[i].setLayoutData(new GridData(SWT.FILL, 0, true, false));
+            else
+                txt_name[i].setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns-1, 1));
             autoCompleteWidget[i] = new AutoCompleteWidget(txt_name[i], AutoCompleteTypes.PV);
 
-            btn_retired[i] = new Button(box, SWT.CHECK);
-            btn_retired[i].setText(Messages.AddPV_Retired);
-            btn_retired[i].setToolTipText(Messages.AddPV_RetiredTT);
-            btn_retired[i].setLayoutData(new GridData(SWT.FILL, 0, false, false));
-            btn_retired[i].setSelection(false);
+            if (Preferences.isShowRetiredPVOptions()) {
+                btn_retired[i] = new Button(box, SWT.CHECK);
+                btn_retired[i].setText(Messages.AddPV_Retired);
+                btn_retired[i].setToolTipText(Messages.AddPV_RetiredTT);
+                btn_retired[i].setLayoutData(new GridData(SWT.FILL, 0, false, false));
+                btn_retired[i].setSelection(false);
+            }
 
             if (! formula)
             {
@@ -360,8 +366,12 @@ public class AddPVDialog extends TitleAreaDialog
                 }
             }
 
-            if (btn_retired[i].getSelection()) {
-                retiredPV[i] = true;
+            if (Preferences.isShowRetiredPVOptions()) {
+                if (btn_retired[i].getSelection()) {
+                    retiredPV[i] = true;
+                } else {
+                    retiredPV[i] = false;
+                }
             } else {
                 retiredPV[i] = false;
             }

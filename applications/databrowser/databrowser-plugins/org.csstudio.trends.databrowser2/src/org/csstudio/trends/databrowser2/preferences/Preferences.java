@@ -68,7 +68,8 @@ public class Preferences
             SCROLL_STEP = "scroll_step",
             USE_TRACE_NAMES = "use_trace_names",
             ALLOW_HIDE_TRACE = "allow_hide_trace",
-            ALLOW_REQUEST_RAW = "allow_request_raw";
+            ALLOW_REQUEST_RAW = "allow_request_raw",
+            SHOW_RETIRED_PV_OPTION = "show_retired_pv_option";
 
     public static boolean isAutomaticHistoryRefresh()
     {
@@ -345,6 +346,14 @@ public class Preferences
         if (prefs == null) // Allow some JUnit tests without prefs
             return Boolean.TRUE;
         return prefs.getBoolean(Activator.PLUGIN_ID, USE_TRACE_NAMES, Boolean.TRUE, null);
+    }
+
+    public static boolean isShowRetiredPVOptions()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null) // Allow some JUnit tests without prefs
+            return Boolean.FALSE;
+        return prefs.getBoolean(Activator.PLUGIN_ID, SHOW_RETIRED_PV_OPTION, Boolean.FALSE, null);
     }
 
 }
