@@ -52,6 +52,26 @@ public class ApplianceStatisticsValueIterator extends ApplianceMeanValueIterator
         super(reader, name, start, end, points, listener);
     }
 
+    /**
+     * Alternative construction a new value iterator using the retiredPV flag.
+     *
+     * @param reader the reader that created this iterator
+     * @param name the name of the PV
+     * @param start the start time of the data window
+     * @param end the end time of the data window
+     * @param points the number of requested points
+     * @param listener the listener that is notified when the iterator is closed
+     * @param retiredPV boolean indicating whether this is a retired PV no longer being archived
+     *
+     * @throws IOException if there was an error during the data fetch process
+     * @throws ArchiverApplianceException if it is not possible to load optimized data for the selected PV
+     * @throws ArchiverApplianceInvalidTypeException if the type of data cannot be returned in optimized format
+     */
+    public ApplianceStatisticsValueIterator(ApplianceArchiveReader reader, String name, Instant start, Instant end,
+            int points, IteratorListener listener, boolean retiredPV) throws ArchiverApplianceException, IOException {
+            super(reader, name, start, end, points, listener, retiredPV);
+        }
+
     /*
      * (non-Javadoc)
      *

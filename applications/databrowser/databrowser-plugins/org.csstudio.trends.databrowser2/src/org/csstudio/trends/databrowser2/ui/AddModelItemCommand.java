@@ -51,6 +51,30 @@ public class AddModelItemCommand extends UndoableAction
             final AxisConfig axis,
             final ArchiveDataSource archive)
     {
+        return forPV(shell, operations_manager, model, pv_name, period, axis, archive, false);
+    }
+
+    /** Create PV via undo-able AddModelItemCommand,
+     *  displaying errors in dialog
+     *  @param shell Shell used for error dialogs
+     *  @param operations_manager OperationsManager where command will be reg'ed
+     *  @param model Model were PV is to be added
+     *  @param pv_name Name of new PV
+     *  @param period scan period
+     *  @param axis Axis
+     *  @param archive Archive data source
+     *  @param retiredPV Boolean indicating whether this is a retired PV no longer being archived
+     *  @return AddModelItemCommand or <code>null</code> on error
+     */
+    public static Optional<AddModelItemCommand> forPV(final Shell shell,
+            final UndoableActionManager operations_manager,
+            final Model model,
+            final String pv_name,
+            final double period,
+            final AxisConfig axis,
+            final ArchiveDataSource archive,
+            final boolean retiredPV)
+    {
         // Create item
         final PVItem item;
         try
@@ -62,6 +86,7 @@ public class AddModelItemCommand extends UndoableAction
                 item.useDefaultArchiveDataSources();
             axis.setVisible(true);
             item.setAxis(axis);
+            item.setRetiredPv(retiredPV);
         }
         catch (Exception ex)
         {

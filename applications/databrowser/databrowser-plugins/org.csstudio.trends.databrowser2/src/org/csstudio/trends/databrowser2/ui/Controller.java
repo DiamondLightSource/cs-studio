@@ -340,7 +340,7 @@ public class Controller
                                 (archives == null || i>=archives.length) ? null : archives[i];
                         AddModelItemCommand.forPV(shell, operations_manager,
                                 model, dlg.getName(i), dlg.getScanPeriod(i),
-                                axis, archive);
+                                axis, archive, dlg.isRetired(i));
                     }
                     return;
                 }
@@ -367,7 +367,7 @@ public class Controller
                 // Add PV Item with data to model
                 AddModelItemCommand.forPV(shell, operations_manager,
                         model, dlg.getItemName(), Preferences.getScanPeriod(),
-                        axis, imported);
+                        axis, imported, false);
             }
 
             @Override
@@ -507,10 +507,12 @@ public class Controller
 
             @Override
             public void changedItemVisibility(final ModelItem item)
-            {   // Show or hide trace by changing visibility.
+            {   // Add/remove from plot, but don't need to get archived data
+                // When made visible, note that item could be in 'middle'
+                // of existing traces, so need to re-create all
                 if (item.isVisible())
                     plot.showTrace(item);
-                else
+                else // Hide trace by changing visibility
                     plot.hideTrace(item);
             }
 
@@ -688,7 +690,8 @@ public class Controller
         for (AxisConfig axis : model.getAxes())
             plot.updateAxis(i++, axis);
         for (ModelItem item : model.getItems())
-            plot.addTrace(item);
+            if (item.isVisible())
+                plot.addTrace(item);
     }
 
     /** (Re-) create traces in plot for each item in the model and add
@@ -701,7 +704,8 @@ public class Controller
         for (AxisConfig axis : model.getAxes())
             plot.updateAxis(i++, axis);
         for (ModelItem item : model.getItems())
-            plot.addTrace(item);
+            if (item.isVisible())
+                plot.addTrace(item);
 
         plot.setAnnotations(oldAnno);
     }

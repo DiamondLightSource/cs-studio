@@ -141,9 +141,16 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
      */
     @Override
     public ApplianceValueIterator getRawValues(int key, String name, Instant start, Instant end) throws UnknownChannelException, Exception {
+        return getRawValues(key, name, start, end, false);
+    }
+
+    /* (non-Javadoc)
+     * @see org.csstudio.archive.reader.ArchiveReader#getRawValues(int, java.lang.String, org.diirt.util.time.Timestamp, org.diirt.util.time.Timestamp, boolean)
+     */
+    public ApplianceValueIterator getRawValues(int key, String name, Instant start, Instant end, boolean retiredPV) throws UnknownChannelException, Exception {
         try {
             name = stripSchema(name);
-            ApplianceRawValueIterator it = new ApplianceRawValueIterator(this, name, start, end, this);
+            ApplianceRawValueIterator it = new ApplianceRawValueIterator(this, name, start, end, this, retiredPV);
             iterators.put(it,this);
             return it;
         } catch (ArchiverApplianceException ex) {
@@ -156,13 +163,20 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
      */
     @Override
     public ValueIterator getOptimizedValues(int key, String name, Instant start, Instant end, int count) throws UnknownChannelException, Exception {
+        return getOptimizedValues(key, name, start, end, count, false);
+    }
+
+    /* (non-Javadoc)
+     * @see org.csstudio.archive.reader.ArchiveReader#getOptimizedValues(int, java.lang.String, org.diirt.util.time.Timestamp, org.diirt.util.time.Timestamp, int, boolean)
+     */
+    public ValueIterator getOptimizedValues(int key, String name, Instant start, Instant end, int count, boolean retiredPV) throws UnknownChannelException, Exception {
         boolean binningSupported = true;
         ApplianceValueIterator it = null;
         name = stripSchema(name);
         if (useNewOptimizedOperator) {
             //try to fetch the data using the new optimized operator
             try {
-                it = new ApplianceOptimizedValueIterator(this, name, start, end, count, useStatistics, this);
+                it = new ApplianceOptimizedValueIterator(this, name, start, end, count, useStatistics, this, retiredPV);
             } catch (ArchiverApplianceInvalidTypeException e) {
                 //binning not supported
                 binningSupported = false;
@@ -176,16 +190,16 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
             try {
                 int points = getNumberOfPoints(name, start, end);
                 if (points <= count) {
-                    it = new ApplianceRawValueIterator(this, name, start, end, this);
+                    it = new ApplianceRawValueIterator(this, name, start, end, this, retiredPV);
                 } else {
                     //only fetch if binning is "still" supported
                     if (binningSupported) {
                         try {
                             //try to bin the values using the mean and std etc. This will work for numeric scalar PVs
                             if (useStatistics) {
-                                it = new ApplianceStatisticsValueIterator(this, name, start, end, count,this);
+                                it = new ApplianceStatisticsValueIterator(this, name, start, end, count,this,retiredPV);
                             } else {
-                                it = new ApplianceMeanValueIterator(this, name, start, end, count,this);
+                                it = new ApplianceMeanValueIterator(this, name, start, end, count,this,retiredPV);
                             }
                         } catch (ArchiverApplianceInvalidTypeException e) {
                             binningSupported = false;
@@ -194,7 +208,7 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
 
                     if (!binningSupported) {
                         //if binning is not supported (string, waveform type), try nth operator
-                        it = new ApplianceNonNumericOptimizedValueIterator(this, name, start, end, count, points,this);
+                        it = new ApplianceNonNumericOptimizedValueIterator(this, name, start, end, count, points,this,retiredPV);
                     }
                 }
             } catch (ArchiverApplianceException e) {

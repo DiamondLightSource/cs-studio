@@ -34,6 +34,8 @@ public class Messages extends NLS
     public static String AddPV_NewOrEmptyAxis;
     public static String AddPV_OnChange;
     public static String AddPV_OnChangeTT;
+    public static String AddPV_Retired;
+    public static String AddPV_RetiredTT;
     public static String AddPV_Period;
     public static String AddPV_PeriodTT;
     public static String AllowHideTrace;

@@ -140,6 +140,24 @@ public interface ArchiveReader extends Closeable
     public ValueIterator getRawValues(int key, String name,
             Instant start, Instant end) throws UnknownChannelException, Exception;
 
+    /** Read original, raw samples from the archive.
+     *  Default implementation will ignore the additional parameter retiredPV.
+     *  Any class implementing this can override this method to use the retiredPV
+     *  to flag a PV as retired.
+     *  @param key Key of the archive to use for retrieval.
+     *  @param name Channel name
+     *  @param start Start time
+     *  @param end End time
+     *  @param retiredPV Boolean indicating whether this is a retired PV no longer being archived
+     *  @return ValueIterator for the 'raw' samples in the archive
+     *  @throws UnknownChannelException when channel is not known
+     *  @throws Exception on error
+     */
+    default ValueIterator getRawValues(int key, String name,
+            Instant start, Instant end, boolean retiredPV) throws UnknownChannelException, Exception{
+        return getRawValues(key, name, start, end);
+    }
+
     /** Read optimized samples from the archive.
      *  <p>
      *  The exact behavior is up to the implementation.
@@ -164,6 +182,37 @@ public interface ArchiveReader extends Closeable
      */
     public ValueIterator getOptimizedValues(int key, String name,
         Instant start, Instant end, int count) throws UnknownChannelException, Exception;
+
+    /** Read optimized samples from the archive and include retired PVs.
+     *  Default implementation will ignore the additional parameter retiredPV.
+     *  Any class implementing this can override this method to use the retiredPV
+     *  to flag a PV as retired.
+     *  <p>
+     *  The exact behavior is up to the implementation.
+     *  In the simplest case, a data provider can fall back to
+     *  <code>getRawValues</code>, i.e. return the raw data.
+     *  Ideally, however, the result will contain about <code>count</code>
+     *  values that represent the data between the <code>start</code> and
+     *  <code>end</code> time, for example by segmenting the time range into
+     *  'count' buckets and returning the min/max/average for each bucket.
+     *  If the raw data contains less than the requested 'count',
+     *  or the raw data is not numeric and thus cannot be reduced,
+     *  the method can fall back to returning the original samples.
+     *
+     *  @param key Key of the archive to use for retrieval.
+     *  @param name Channel name
+     *  @param start Start time
+     *  @param end End time
+     *  @param count Hint for number of values
+     *  @param retiredPV Boolean indicating whether this is a retired PV no longer being archived
+     *  @return ValueIterator for the 'raw' samples in the archive
+     *  @throws UnknownChannelException when channel is not known
+     *  @throws Exception on error
+     */
+    default ValueIterator getOptimizedValues(int key, String name,
+            Instant start, Instant end, int count, boolean retiredPV) throws UnknownChannelException, Exception{
+        return getOptimizedValues(key, name, start, end, count);
+    }
 
     /** Cancel an ongoing archive query.
      *  It's up to the implementation to support this for all queries,

@@ -50,6 +50,29 @@ public class ApplianceMeanValueIterator extends ApplianceValueIterator {
         fetchData();
     }
 
+    /**
+     * Alternative constructor that fetches data from appliance archive reader using the retiredPV flag.
+     *
+     * @param reader instance of appliance archive reader
+     * @param name name of the PV
+     * @param start start of the time period
+     * @param end end of the time period
+     * @param points the number of requested points
+     * @param listener the listener that is notified when the iterator is closed
+     * @param retiredPV boolean indicating whether this is a retired PV no longer being archived
+     * @throws IOException if there was an error during the data fetch process
+     * @throws ArchiverApplianceException if it is not possible to load optimized data for the selected PV
+     * @throws ArchiverApplianceInvalidTypeException if the type of data cannot be returned in optimized format
+     */
+    public ApplianceMeanValueIterator(ApplianceArchiveReader reader,
+            String name, Instant start, Instant end, int points, IteratorListener listener, boolean retiredPV)
+                    throws ArchiverApplianceException, IOException {
+        super(reader,name,start,end,listener,retiredPV);
+        this.requestedPoints = points;
+        this.display = determineDisplay(reader, name, end);
+        fetchData();
+    }
+
     /*
      * (non-Javadoc)
      * @see org.csstudio.archive.reader.appliance.ApplianceValueIterator#fetchDataInternal(java.lang.String)
