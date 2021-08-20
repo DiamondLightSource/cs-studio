@@ -367,13 +367,7 @@ public class AddPVDialog extends TitleAreaDialog
             }
 
             if (Preferences.isShowRetiredPVOptions()) {
-                if (btn_retired[i].getSelection()) {
-                    retiredPV[i] = true;
-                } else {
-                    retiredPV[i] = false;
-                }
-            } else {
-                retiredPV[i] = false;
+                retiredPV[i] = btn_retired[i].getSelection();
             }
 
             // update axis_index internally
