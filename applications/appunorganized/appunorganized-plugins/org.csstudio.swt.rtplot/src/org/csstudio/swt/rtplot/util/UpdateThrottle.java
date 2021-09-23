@@ -93,7 +93,9 @@ public class UpdateThrottle
         }
         else
         {
-            // In idle period, react to trigger, but also on timer thread
+            // In idle period, react to trigger, but also on timer thread.
+            // A trigger can occasionally arrive after the timer is shutdown
+            // in which case it is ignored.
             if (!timer.isShutdown())
                 timer.execute(update_then_wake);
         }
