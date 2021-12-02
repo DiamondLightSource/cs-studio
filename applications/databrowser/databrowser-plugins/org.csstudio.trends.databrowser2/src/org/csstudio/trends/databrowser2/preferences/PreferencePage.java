@@ -217,5 +217,8 @@ public class PreferencePage extends FieldEditorPreferencePage
 
         addField(new BooleanFieldEditor(Preferences.ALLOW_REQUEST_RAW,
                 Messages.AllowRequestRaw, parent));
+
+        addField(new BooleanFieldEditor(Preferences.SHOW_DISCONNECT,
+                Messages.ShowDisconnect, parent));
     }
 }

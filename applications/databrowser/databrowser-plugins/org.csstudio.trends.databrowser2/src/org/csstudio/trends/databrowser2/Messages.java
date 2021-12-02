@@ -260,6 +260,7 @@ public class Messages extends NLS
     public static String SeverityColumn;
     public static String SeverityStatusFmt;
     public static String ShowAxisName;
+    public static String ShowDisconnect;
     public static String ShowGridLines;
     public static String ShowTraceNames;
     public static String StartEndDialogBtn;

@@ -18,6 +18,8 @@ import org.diirt.vtype.ValueFactory;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
+import org.csstudio.trends.databrowser2.preferences.Preferences;
+
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadInfo;
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadType;
 
