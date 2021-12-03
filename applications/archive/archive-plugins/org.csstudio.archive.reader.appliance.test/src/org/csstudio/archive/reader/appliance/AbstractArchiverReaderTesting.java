@@ -11,7 +11,6 @@ import org.csstudio.archive.vtype.ArchiveVNumberArray;
 import org.csstudio.archive.vtype.ArchiveVString;
 import org.csstudio.archive.vtype.ArchiveVType;
 import org.diirt.vtype.AlarmSeverity;
-import org.eclipse.swt.widgets.Display;
 
 /**
  *
@@ -63,7 +62,6 @@ public abstract class AbstractArchiverReaderTesting {
      * @throws Exception in case of an error
      */
     protected ArchiveVNumber[] getValuesNumber(String pvname, boolean optimized, int count, Instant start, Instant end) throws Exception {
-        getDisplay();
         ValueIterator iterator = getIterator(pvname, optimized, count,start,end);
         ArrayList<ArchiveVNumber> vals = new ArrayList<ArchiveVNumber>();
         while(iterator.hasNext()) {
@@ -197,17 +195,5 @@ public abstract class AbstractArchiverReaderTesting {
        } else {
            return AlarmSeverity.UNDEFINED;
        }
-    }
-
-    /**
-     * Get a display for the databrowser activator.
-     * @return a display object
-     */
-    protected Display getDisplay() {
-        Display display = Display.getCurrent();
-        // may be null if outside the UI thread
-        if (display == null)
-            display = Display.getDefault();
-        return display;
     }
 }
