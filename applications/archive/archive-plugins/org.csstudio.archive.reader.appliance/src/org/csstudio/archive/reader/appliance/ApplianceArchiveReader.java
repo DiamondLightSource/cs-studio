@@ -141,9 +141,16 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
      */
     @Override
     public ApplianceValueIterator getRawValues(int key, String name, Instant start, Instant end) throws UnknownChannelException, Exception {
+        return getRawValues(key, name, start, end, false);
+    }
+
+    /* (non-Javadoc)
+     * @see org.csstudio.archive.reader.ArchiveReader#getRawValues(int, java.lang.String, org.diirt.util.time.Timestamp, org.diirt.util.time.Timestamp, boolean)
+     */
+    public ApplianceValueIterator getRawValues(int key, String name, Instant start, Instant end, boolean showDisconnections) throws UnknownChannelException, Exception {
         try {
             name = stripSchema(name);
-            ApplianceRawValueIterator it = new ApplianceRawValueIterator(this, name, start, end, this);
+            ApplianceRawValueIterator it = new ApplianceRawValueIterator(this, name, start, end, this, showDisconnections);
             iterators.put(it,this);
             return it;
         } catch (ArchiverApplianceException ex) {
@@ -156,13 +163,20 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
      */
     @Override
     public ValueIterator getOptimizedValues(int key, String name, Instant start, Instant end, int count) throws UnknownChannelException, Exception {
+        return getOptimizedValues(key, name, start, end, count, false);
+    }
+
+    /* (non-Javadoc)
+     * @see org.csstudio.archive.reader.ArchiveReader#getOptimizedValues(int, java.lang.String, org.diirt.util.time.Timestamp, org.diirt.util.time.Timestamp, int, booleanss)
+     */
+    public ValueIterator getOptimizedValues(int key, String name, Instant start, Instant end, int count, boolean showDisconnections) throws UnknownChannelException, Exception {
         boolean binningSupported = true;
         ApplianceValueIterator it = null;
         name = stripSchema(name);
         if (useNewOptimizedOperator) {
             //try to fetch the data using the new optimized operator
             try {
-                it = new ApplianceOptimizedValueIterator(this, name, start, end, count, useStatistics, this);
+                it = new ApplianceOptimizedValueIterator(this, name, start, end, count, useStatistics, this, showDisconnections);
             } catch (ArchiverApplianceInvalidTypeException e) {
                 //binning not supported
                 binningSupported = false;
@@ -176,7 +190,7 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
             try {
                 int points = getNumberOfPoints(name, start, end);
                 if (points <= count) {
-                    it = new ApplianceRawValueIterator(this, name, start, end, this);
+                    it = new ApplianceRawValueIterator(this, name, start, end, this, showDisconnections);
                 } else {
                     //only fetch if binning is "still" supported
                     if (binningSupported) {
@@ -200,7 +214,7 @@ public class ApplianceArchiveReader implements ArchiveReader, IteratorListener {
             } catch (ArchiverApplianceException e) {
                 //fallback for older archiver appliance, which didn't have the nth operator
                 try {
-                    it = new ApplianceRawValueIterator(this, name, start, end, this);
+                    it = new ApplianceRawValueIterator(this, name, start, end, this, showDisconnections);
                 } catch (ArchiverApplianceException exc) {
                     throw new UnknownChannelException(name);
                 }

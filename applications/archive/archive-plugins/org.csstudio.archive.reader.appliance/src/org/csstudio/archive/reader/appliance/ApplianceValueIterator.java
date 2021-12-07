@@ -28,8 +28,6 @@ import org.diirt.vtype.ValueFactory;
 import com.google.protobuf.ByteString;
 import com.google.protobuf.Descriptors.FieldDescriptor;
 
-import org.csstudio.trends.databrowser2.preferences.Preferences;
-
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.FieldValue;
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadInfo;
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadType;
@@ -64,6 +62,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
 
     protected EpicsMessage savedMessage;
     protected boolean reuseMessage;
+    protected boolean showDisconnections;
 
     /**
      * Constructs a new ApplianceValueIterator.
@@ -72,9 +71,25 @@ public abstract class ApplianceValueIterator implements ValueIterator {
      * @param name the name of the pv to load the data for
      * @param start the start of the time window of the data
      * @param end the end of the time window of the data
+     * @param listener the listener that is notified when the iterator is closed
      */
     protected ApplianceValueIterator(ApplianceArchiveReader reader, String name, Instant start, Instant end,
             IteratorListener listener) {
+        this(reader, name, start, end, listener, false);
+    }
+
+    /**
+     * Alternative construction of a new ApplianceValueIterator using the showDisconnections flag.
+     *
+     * @param reader the reader to use
+     * @param name the name of the pv to load the data for
+     * @param start the start of the time window of the data
+     * @param end the end of the time window of the data
+     * @param listener the listener that is notified when the iterator is closed
+     * @param showDisconnections boolean indicating whether disconnections should be identified
+     */
+    protected ApplianceValueIterator(ApplianceArchiveReader reader, String name, Instant start, Instant end,
+            IteratorListener listener, boolean showDisconnections) {
         this.reader = reader;
         this.name = name;
         this.start = start;
@@ -82,6 +97,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
         this.listener = listener;
         this.reuseMessage = false;
         this.savedMessage = null;
+        this.showDisconnections = showDisconnections;
     }
 
     /**
@@ -150,7 +166,7 @@ public abstract class ApplianceValueIterator implements ValueIterator {
                 reuseMessage = false;
             }
 
-            if (Preferences.showDisconnect()) {
+            if (this.showDisconnections) {
                 VType check = checkDisconnect(message);
                 if (check != null)
                     return check;

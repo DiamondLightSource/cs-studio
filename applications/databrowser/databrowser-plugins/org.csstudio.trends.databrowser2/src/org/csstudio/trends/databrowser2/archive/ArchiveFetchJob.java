@@ -134,12 +134,13 @@ public class ArchiveFetchJob extends Job
                     final ValueIterator value_iter;
                     try
                     {
+                        boolean showDisconnect = Preferences.showDisconnect();
                         if (item.getRequestType() == RequestType.RAW)
                             value_iter = the_reader.getRawValues(archive.getKey(), item.getResolvedName(),
-                                                                 start, end);
+                                                                 start, end, showDisconnect);
                         else
                             value_iter = the_reader.getOptimizedValues(archive.getKey(), item.getResolvedName(),
-                                                                       start, end, bins);
+                                                                       start, end, bins, showDisconnect);
                     }
                     catch (UnknownChannelException e)
                     {

@@ -18,8 +18,6 @@ import org.diirt.vtype.ValueFactory;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
-import org.csstudio.trends.databrowser2.preferences.Preferences;
-
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadInfo;
 import edu.stanford.slac.archiverappliance.PB.EPICSEvent.PayloadType;
 
@@ -37,6 +35,7 @@ public class ApplianceOptimizedValueIterator extends ApplianceValueIterator {
     private final int requestedPoints;
     private final boolean useStatistics;
     private boolean firstDisconnnect;
+    private boolean showDisconnections;
 
     /**
      * Constructor that fetches data from appliance archive reader.
@@ -49,19 +48,21 @@ public class ApplianceOptimizedValueIterator extends ApplianceValueIterator {
      * @param useStatistics true if the returned data should include statistics or false if only mean value should be
      *            present
      * @param listener the listener that is notified when the iterator is closed
+     * @param showDisconnections boolean indicating whether disconnections should be identified
      *
      * @throws IOException if there was an error during the data fetch process
      * @throws ArchiverApplianceInvalidTypeException if the type of data cannot be returned in optimized format
      * @throws ArchiverApplianceException if it is not possible to load optimised data for the selected PV
      */
     public ApplianceOptimizedValueIterator(ApplianceArchiveReader reader, String name, Instant start, Instant end,
-            int points, boolean useStatistics, IteratorListener listener) throws ArchiverApplianceException,
+            int points, boolean useStatistics, IteratorListener listener, boolean showDisconnections) throws ArchiverApplianceException,
             IOException {
-        super(reader, name, start, end, listener);
+        super(reader, name, start, end, listener, showDisconnections);
         this.requestedPoints = points;
         this.useStatistics = useStatistics;
         this.display = determineDisplay(reader, name, end);
         this.firstDisconnnect = false;
+        this.showDisconnections = showDisconnections;
         fetchData();
     }
 
@@ -153,7 +154,7 @@ public class ApplianceOptimizedValueIterator extends ApplianceValueIterator {
             }
 
             // Check if 'cnxlostepsecs' field value is set (for Raw data)
-            if (Preferences.showDisconnect()) {
+            if (this.showDisconnections) {
                 VType check = checkDisconnect(message);
                 if (check != null)
                     return check;
