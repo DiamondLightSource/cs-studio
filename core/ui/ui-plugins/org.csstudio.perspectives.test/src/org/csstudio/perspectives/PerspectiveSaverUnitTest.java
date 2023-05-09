@@ -82,11 +82,9 @@ public class PerspectiveSaverUnitTest {
     public void setUp() {
         try {
             URL workspaceUrl = new URL("file:" + workspaceLocation);
-            when(instanceLocation.getDataArea(anyString())).thenReturn(workspaceUrl);
-            doNothing().when(preferences).put(anyString(), anyString());
-            when(prefsService.getString(anyString(), anyString(), anyString(), any(IScopeContext[].class))).thenReturn("dummy");
+            when(prefsService.getString(any(), any(), any(), any())).thenReturn("dummy");
             // Return first argument if cloneElement() is called on mockModelService.
-            when(mockModelService.cloneElement(any(MUIElement.class), any(MSnippetContainer.class))).thenAnswer(new Answer<MUIElement>() {
+            when(mockModelService.cloneElement(any(), any())).thenAnswer(new Answer<MUIElement>() {
                 @Override
                 public MUIElement answer(InvocationOnMock invocation) {
                     Object[] args = invocation.getArguments();
@@ -119,7 +117,6 @@ public class PerspectiveSaverUnitTest {
     @Test
     public void handleEventIgnoresEventsIfNoSaveDirPreferenceIsSet() {
         // Return null from preference query.
-        when(prefsService.getString(anyString(), anyString(), anyString(), any(IScopeContext[].class))).thenReturn(null);
         Event testEvent = createTestEvent(UIEvents.EventTags.ELEMENT, new Object());
         saver.handleEvent(testEvent);
         verify(mockModelService, never()).findElements(any(MUIElement.class), any(String.class), any(Class.class), any(List.class));
